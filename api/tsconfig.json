@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "target": "es6", // ECMAScript에서 어떤 버전을 쓸 것인지를 정의.
-    "module": "commonjs",
+    // "module": "commonjs",
     "outDir": "./dist", // .ts가 변환되어 생성된 .js들은 "dist" 디렉토리에 저장됨
     "moduleResolution": "node", // node.js의 모듈 해석 방식을 사용함
-    "sourceMap": true // 소스맵(*.map) 파일 생성 여부
+    "sourceMap": true, // 소스맵(*.map) 파일 생성 여부
+    "allowSyntheticDefaultImports": true
   },
   "lib": ["es2015"]
 }
