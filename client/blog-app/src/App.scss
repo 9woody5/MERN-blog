@@ -3,6 +3,30 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+input {
+  display: block;
+  margin-bottom: 5px;
+  width: 100%;
+  border: none;
+  background-color: white;
+  border-radius: 5px;
+  border: 2px solid #ddd;
+  padding: 10px;
+}
+
+button {
+  width: 100%;
+  display: block;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #555;
+  color: #fff;
+  margin-top: 10px;
+  cursor: pointer;
+}
 body {
   color: #222;
 }
@@ -61,33 +85,12 @@ header {
     line-height: 1.5;
   }
 }
+
 .login_form,
 .register_form {
   max-width: 400px;
   margin: 0 auto;
 
-  input {
-    display: block;
-    margin-bottom: 5px;
-    width: 100%;
-    border: none;
-    background-color: white;
-    border-radius: 5px;
-    border: 2px solid #ddd;
-    padding: 10px;
-  }
-  button {
-    width: 100%;
-    display: block;
-    padding: 10px 0;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    background-color: #555;
-    color: #fff;
-    margin-top: 10px;
-    cursor: pointer;
-  }
   h1 {
     text-align: center;
     margin-bottom: 20px;

@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
 
 export default function LoginPage() {
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [redirect, setRedirect] = useState<boolean>(false);
+  const { setUserInfo } = useContext(UserContext);
 
   async function login(e: React.FormEvent) {
     e.preventDefault();
@@ -20,9 +22,12 @@ export default function LoginPage() {
         // axios request에도 cookie 정보가 포함되도록 설정
         withCredentials: true,
       });
-      console.log("요청 성공", response.data);
-      // alert("로그인 되었습니다!");
-      setRedirect(true);
+      if (response.status === 200) {
+        setUserInfo(response.data);
+        setRedirect(true);
+      } else {
+        alert("로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      }
     } catch (error) {
       console.error("요청 오류", error);
       alert("로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");

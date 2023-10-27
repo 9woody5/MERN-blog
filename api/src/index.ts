@@ -50,8 +50,11 @@ app.post("/login", async (req: Request, res: Response) => {
     // 로그인 시 필요한 정보 가져오기
     // 에러 발생 시, err 정보, 에러 없으면 token 발급
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-      if (err) throw new Error();
-      res.cookie("token", token).json("ok");
+      if (err) throw err;
+      res.cookie("token", token).json({
+        id: userDoc._id,
+        username,
+      });
     });
   } else {
     res.status(400).json("로그인에 실패했습니다.");
@@ -61,10 +64,19 @@ app.post("/login", async (req: Request, res: Response) => {
 app.get("/profile", (req: Request, res: Response) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, (err, info) => {
-    if (err) throw new Error();
-    res.json(info);
+    if (err) {
+      return res.status(401).json("로그인이 필요합니다");
+    } else {
+      res.json(info);
+    }
   });
 });
+
+app.post("/logout", (req: Request, res: Response) => {
+  res.cookie("token", "").json("Ok");
+});
+
+app.post("/post", (req: Request, res: Response) => {});
 
 // 서버 실행
 app.listen(PORT, () => {
