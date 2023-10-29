@@ -7,8 +7,13 @@ import * as mongoose from "mongoose";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import * as cookieparser from "cookie-parser";
+import * as multer from "multer";
+import * as fs from "fs";
 import User from "../models/User";
+import Post from "../models/Post";
+import * as path from "path";
 
+const uploadMiddleware = multer({ dest: "uploads/" });
 const app = express();
 const PORT = 4000;
 
@@ -19,6 +24,7 @@ const secret = "hQD5DB2PeCQMwMewEBSgGj9xe9sP8WVcqsHj3EXWsD55RpYYjB";
 app.use(cors({ credentials: true, origin: "http://localhost:4173" }));
 app.use(express.json());
 app.use(cookieparser());
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 mongoose.connect("mongodb+srv://blog:t0DIvF8o7Pqx6ANS@cluster0.kjnnsat.mongodb.net/?retryWrites=true&w=majority");
 
@@ -76,7 +82,87 @@ app.post("/logout", (req: Request, res: Response) => {
   res.cookie("token", "").json("Ok");
 });
 
-app.post("/post", (req: Request, res: Response) => {});
+app.post("/post", uploadMiddleware.single("file"), async (req: Request, res: Response) => {
+  const { originalname, path } = req.file;
+  const parts = originalname.split(".");
+  const ext = parts[parts.length - 1];
+  const newPath = path + "." + ext;
+
+  // 파일명에 확장자를 붙여서 수정하기 위해 fs 모듈 사용
+  fs.renameSync(path, newPath);
+
+  const { token } = req.cookies;
+  const info = jwt.verify(token, secret, {}) as jwt.JwtPayload;
+
+  if (!info || typeof info !== "object") {
+    return res.status(401).json("로그인이 필요합니다");
+  } else {
+    const { title, summary, content } = req.body;
+    const postDoc = await Post.create({
+      title,
+      summary,
+      content,
+      thumb: newPath,
+      author: info.id,
+    });
+    res.json(postDoc);
+  }
+});
+
+app.put("/post", uploadMiddleware.single("file"), async (req: Request, res: Response) => {
+  let newPath = null;
+  if (req.file) {
+    const { originalname, path } = req.file;
+    const parts = originalname.split(".");
+    const ext = parts[parts.length - 1];
+    newPath = path + "." + ext;
+    // 파일명에 확장자를 붙여서 수정하기 위해 fs 모듈 사용
+    fs.renameSync(path, newPath);
+  }
+
+  const { token } = req.cookies;
+  const info = jwt.verify(token, secret, {}) as jwt.JwtPayload;
+
+  if (!info || typeof info !== "object") {
+    return res.status(401).json("로그인이 필요합니다");
+  } else {
+    const { id, title, summary, content } = req.body;
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      {
+        title,
+        summary,
+        content,
+        thumb: newPath || undefined,
+      },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      return res.status(404).json("게시글을 찾을 수 없습니다.");
+    }
+
+    const isAuthor = JSON.stringify(updatedPost.author) === JSON.stringify(info.id);
+
+    if (!isAuthor) {
+      res.status(401).json("수정 권한이 없습니다.");
+      throw "수정 권한이 없습니다.";
+    }
+
+    res.json(updatedPost);
+  }
+});
+
+app.get("/post", async (req: Request, res: Response) => {
+  const posts = await Post.find().populate("author", ["username"]).sort({ createdAt: -1 }).limit(20);
+  res.json(posts);
+});
+
+app.get("/post/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const postDoc = await (await Post.findById(id)).populate("author", ["username"]);
+  res.json(postDoc);
+});
 
 // 서버 실행
 app.listen(PORT, () => {

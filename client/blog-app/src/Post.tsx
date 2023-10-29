@@ -1,21 +1,39 @@
-export default function Post() {
+import { formatISO9075 } from "date-fns";
+import { Link } from "react-router-dom";
+
+export interface PostProps {
+  _id: string;
+  title: string;
+  summary: string;
+  thumb: string;
+  content: string;
+  createdAt: string;
+  author: {
+    username: string;
+    _id: string;
+  };
+}
+
+const Post: React.FC<PostProps> = ({ _id, title, summary, thumb, content, createdAt, author }) => {
   return (
     <div className="post">
       <div className="img_box">
-        <img src="https://miro.medium.com/v2/resize:fit:828/0*_AJrwSXVrWPtaRk7" alt="" />
+        <Link to={`/post/${_id}`}>
+          <img src={`http://localhost:4000/${thumb.replace(/\\/g, "/")}`} alt="" />
+        </Link>
       </div>
       <div className="texts">
-        <h2>Let’s Stop Calling It “Content”</h2>
+        <Link to={`/post/${_id}`}>
+          <h2 className="title">{title}</h2>
+        </Link>
         <p className="info">
-          <a className="author">Clive Thompson</a>
-          <time>2023-09-30 17:53</time>
+          <a className="author">{author.username}</a>
+          <time>{formatISO9075(new Date(createdAt))}</time>
         </p>
-        <p className="summary">
-          It was back in the late 1990s, during the delirious height of the “dot com” boom. Corporations were rolling
-          out web sites, the hawt digital technology of the day. These companies all wanted their web-sites to be
-          “sticky” — i.e. to give people a reason to stick around.
-        </p>
+        <p className="summary">{summary}</p>
       </div>
     </div>
   );
-}
+};
+
+export default Post;

@@ -55,14 +55,15 @@ export default function Header() {
       <nav>
         {username && (
           <>
+            <span>Hi, {username}</span>
             <Link to="/create">글 쓰기</Link>
-            <a onClick={logout}>Logout</a>
+            <a onClick={logout}>로그아웃</a>
           </>
         )}
         {!username && (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
+            <Link to="/login">로그인</Link>
+            <Link to="/register">회원가입</Link>
           </>
         )}
       </nav>

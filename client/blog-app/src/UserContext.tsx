@@ -1,6 +1,8 @@
 import { createContext, ReactNode, useState } from "react";
 export interface UserInfo {
   username: string | null;
+  id?: string;
+  _id?: string;
 }
 
 export const UserContext = createContext<{ userInfo: UserInfo | null; setUserInfo: (info: UserInfo | null) => void }>({
