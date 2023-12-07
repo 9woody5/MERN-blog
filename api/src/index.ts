@@ -21,7 +21,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = "hQD5DB2PeCQMwMewEBSgGj9xe9sP8WVcqsHj3EXWsD55RpYYjB";
 
 // express 세팅
-app.use(cors({ credentials: true, origin: "http://localhost:4173" }));
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(cookieparser());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
@@ -43,6 +43,23 @@ app.post("/register", async (req: Request, res: Response) => {
     res.json(userDoc);
   } catch (err) {
     res.status(400).json(err);
+  }
+});
+
+app.get("/check-username", async (req: Request, res: Response) => {
+  const { username } = req.query;
+
+  try {
+    const existingUser = await User.findOne({ username });
+
+    if (existingUser) {
+      res.json({ available: false });
+    } else {
+      res.json({ available: true });
+    }
+  } catch (error) {
+    console.error("유저 이름 확인 오류", error);
+    res.status(500).json({ error: "서버 오류" });
   }
 });
 
