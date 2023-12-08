@@ -12,21 +12,23 @@ import * as fs from "fs";
 import User from "../models/User";
 import Post from "../models/Post";
 import * as path from "path";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const uploadMiddleware = multer({ dest: "uploads/" });
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 const salt = bcrypt.genSaltSync(10);
-const secret = "hQD5DB2PeCQMwMewEBSgGj9xe9sP8WVcqsHj3EXWsD55RpYYjB";
+const secret = process.env.SECRET;
 
 // express 세팅
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: process.env.CLIENT_PORT }));
 app.use(express.json());
 app.use(cookieparser());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-mongoose.connect("mongodb+srv://blog:t0DIvF8o7Pqx6ANS@cluster0.kjnnsat.mongodb.net/?retryWrites=true&w=majority");
+mongoose.connect(process.env.MONGODB_API);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
