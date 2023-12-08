@@ -10,7 +10,7 @@ export default function EditPost() {
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<FileList | null>(null);
-  const [thumb, setThumb] = useState("");
+  // const [thumb, setThumb] = useState("");
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {

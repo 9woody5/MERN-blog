@@ -14,7 +14,7 @@ export interface PostProps {
   };
 }
 
-const Post: React.FC<PostProps> = ({ _id, title, summary, thumb, content, createdAt, author }) => {
+const Post: React.FC<PostProps> = ({ _id, title, summary, thumb, createdAt, author }) => {
   return (
     <div className="post">
       <div className="img_box">

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FormValue } from "./LoginPage";
 
-export default function RegisterPage(props: any) {
+export default function RegisterPage() {
   const {
     register,
     handleSubmit,

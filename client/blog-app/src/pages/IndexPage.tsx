@@ -1,9 +1,10 @@
 import Post from "../Post";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { PostProps } from "./../Post";
 
 export default function IndexPage() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<PostProps[]>([]);
 
   // 홈페이지에 mount 했을 때 실행할 내용
   useEffect(() => {
@@ -19,5 +20,5 @@ export default function IndexPage() {
       });
   }, []);
 
-  return <>{posts.length > 0 && posts.map((post, id) => <Post key={id} {...post} />)}</>;
+  return <>{posts.length > 0 && posts.map((post: PostProps, id: number) => <Post key={id} {...post} />)}</>;
 }

@@ -1,5 +1,10 @@
 import ReactQuill from "react-quill";
 
+interface EditorProps {
+  value: string;
+  onChange: (content: string) => void;
+}
+
 const modules = {
   toolbar: [
     [{ header: [1, 2, false] }],
@@ -10,6 +15,6 @@ const modules = {
   ],
 };
 
-export default function Editor({ value, onChange }) {
+export default function Editor({ value, onChange }: EditorProps) {
   return <ReactQuill value={value} theme={"snow"} onChange={onChange} modules={modules} />;
 }

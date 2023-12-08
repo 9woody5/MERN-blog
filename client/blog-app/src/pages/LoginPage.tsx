@@ -10,7 +10,7 @@ export interface FormValue {
   password: string;
 }
 
-export default function LoginPage(props: any) {
+export default function LoginPage() {
   const {
     register,
     handleSubmit,
