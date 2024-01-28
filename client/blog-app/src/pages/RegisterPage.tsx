@@ -12,7 +12,7 @@ export default function RegisterPage() {
 
   const checkUsernameAvailability = async (username: string) => {
     try {
-      const response = await axios.get(`http://localhost:4000/check-username?username=${username}`);
+      const response = await axios.get(`http://localhost:4000/user/check-username?username=${username}`);
       return response.data.available;
     } catch (error) {
       console.error("유저 이름 확인 오류", error);
@@ -31,7 +31,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await axios.post("http://localhost:4000/register", data, {
+      const response = await axios.post("http://localhost:4000/user/register", data, {
         headers: {
           "Content-Type": "application/json",
         },

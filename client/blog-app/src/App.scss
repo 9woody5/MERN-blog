@@ -161,12 +161,16 @@ header {
   .content > p {
     line-height: 1.7rem;
   }
-  .edit_row {
+  .options {
     text-align: center;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
   }
   .edit_btn {
-    background-color: #333;
+    background-color: #272e48;
     color: #fff;
     text-decoration: none;
     display: inline-flex;
@@ -174,8 +178,19 @@ header {
     gap: 5px;
     padding: 10px 20px;
     border-radius: 5px;
-    svg {
-      height: 20px;
-    }
+    font-weight: bold;
+  }
+  .delete_btn {
+    width: auto;
+    margin-top: 0;
+    background-color: rgb(147, 44, 44);
+    color: #fff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
   }
 }
