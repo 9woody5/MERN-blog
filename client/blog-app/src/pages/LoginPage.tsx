@@ -22,7 +22,7 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<FormValue> = async (data) => {
     try {
-      const response = await axios.post("http://localhost:4000/login", data, {
+      const response = await axios.post("http://localhost:4000/user/login", data, {
         headers: {
           "Content-Type": "application/json",
         },
