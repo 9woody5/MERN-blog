@@ -1,18 +1,20 @@
-import * as express from "express";
-import * as cors from "cors";
-import * as morgan from "morgan";
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
 import helmet from "helmet";
 import { Request, Response } from "express";
 import * as mongoose from "mongoose";
 import * as bcrypt from "bcrypt";
-import * as jwt from "jsonwebtoken";
-import * as cookieparser from "cookie-parser";
-import * as multer from "multer";
+import jwt from "jsonwebtoken";
+import cookieparser from "cookie-parser";
+import multer from "multer";
 import * as fs from "fs";
-import User from "../models/User";
-import Post from "../models/Post";
-import * as path from "path";
+import Post from "./models/Post";
+import User from "./models/User";
+import path from "path";
 import * as dotenv from "dotenv";
+import router from "./routes/userRouter";
+import { fileURLToPath } from "url";
 dotenv.config();
 
 const uploadMiddleware = multer({ dest: "uploads/" });
@@ -26,9 +28,12 @@ const secret = process.env.SECRET;
 app.use(cors({ credentials: true, origin: process.env.CLIENT_PORT }));
 app.use(express.json());
 app.use(cookieparser());
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-mongoose.connect(process.env.MONGODB_API);
+mongoose.connect(process.env.MONGODB_API!);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
@@ -65,30 +70,11 @@ app.get("/check-username", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/login", async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  const userDoc = await User.findOne({ username });
-  // db의 hashed password와 입력된 값 비교
-  const passOk = bcrypt.compareSync(password, userDoc.password);
-
-  if (passOk) {
-    // 로그인 시 필요한 정보 가져오기
-    // 에러 발생 시, err 정보, 에러 없으면 token 발급
-    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-      if (err) throw err;
-      res.cookie("token", token).json({
-        id: userDoc._id,
-        username,
-      });
-    });
-  } else {
-    res.status(400).json("로그인에 실패했습니다.");
-  }
-});
+app.use("/user", router);
 
 app.get("/profile", (req: Request, res: Response) => {
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, (err, info) => {
+  jwt.verify(token, secret as string, {}, (err, info) => {
     if (err) {
       return res.status(401).json("로그인이 필요합니다");
     } else {
@@ -102,6 +88,9 @@ app.post("/logout", (req: Request, res: Response) => {
 });
 
 app.post("/post", uploadMiddleware.single("file"), async (req: Request, res: Response) => {
+  if (!req.file) {
+    return res.status(400).json("파일이 업로드되지 않았습니다.");
+  }
   const { originalname, path } = req.file;
   const parts = originalname.split(".");
   const ext = parts[parts.length - 1];
@@ -111,7 +100,7 @@ app.post("/post", uploadMiddleware.single("file"), async (req: Request, res: Res
   fs.renameSync(path, newPath);
 
   const { token } = req.cookies;
-  const info = jwt.verify(token, secret, {}) as jwt.JwtPayload;
+  const info = jwt.verify(token, secret as string, {}) as jwt.JwtPayload;
 
   if (!info || typeof info !== "object") {
     return res.status(401).json("로그인이 필요합니다");
@@ -140,7 +129,7 @@ app.put("/post", uploadMiddleware.single("file"), async (req: Request, res: Resp
   }
 
   const { token } = req.cookies;
-  const info = jwt.verify(token, secret, {}) as jwt.JwtPayload;
+  const info = jwt.verify(token, secret as string, {}) as jwt.JwtPayload;
 
   if (!info || typeof info !== "object") {
     return res.status(401).json("로그인이 필요합니다");
@@ -179,8 +168,18 @@ app.get("/post", async (req: Request, res: Response) => {
 
 app.get("/post/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
-  const postDoc = await (await Post.findById(id)).populate("author", ["username"]);
-  res.json(postDoc);
+
+  try {
+    const postDoc = await Post.findById(id).populate("author", ["username"]);
+
+    if (!postDoc) {
+      return res.status(404).json("게시글을 찾을 수 없습니다.");
+    }
+    res.json(postDoc);
+  } catch (error) {
+    console.error("게시글 조회 오류", error);
+    res.status(500).json({ error: "서버 오류" });
+  }
 });
 
 // 서버 실행
