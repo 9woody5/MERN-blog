@@ -7,5 +7,6 @@ postRouter.post("/", postController.createPost);
 postRouter.put("/", postController.updatePost);
 postRouter.get("/", postController.getAllPosts);
 postRouter.get("/:id", postController.getPostById);
+postRouter.delete("/:id", postController.deletePost);
 
 export default postRouter;

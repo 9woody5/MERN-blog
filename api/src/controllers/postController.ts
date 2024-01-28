@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import fs from "fs";
-import * as dotenv from "dotenv";
 import Post from "../models/Post";
+import * as dotenv from "dotenv";
 dotenv.config();
 
 const secret = process.env.SECRET;
@@ -98,6 +98,46 @@ export const getPostById = async (req: Request, res: Response) => {
     res.json(postDoc);
   } catch (error) {
     console.error("게시글 조회 오류", error);
+    res.status(500).json({ error: "서버 오류" });
+  }
+};
+
+export const deletePost = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const { token } = req.cookies;
+  const info = jwt.verify(token, secret as string, {}) as jwt.JwtPayload;
+
+  if (!info || typeof info !== "object") {
+    return res.status(401).json("로그인이 필요합니다");
+  }
+
+  try {
+    const postToDelete = await Post.findById(id);
+
+    if (!postToDelete) {
+      return res.status(404).json("게시글을 찾을 수 없습니다.");
+    }
+
+    const isAuthor = JSON.stringify(postToDelete.author) === JSON.stringify(info.id);
+
+    if (!isAuthor) {
+      return res.status(401).json("삭제 권한이 없습니다.");
+    }
+
+    if (postToDelete.thumb) {
+      fs.unlinkSync(postToDelete.thumb);
+    }
+
+    const deletedPost = await Post.findByIdAndDelete(id);
+
+    if (!deletedPost) {
+      return res.status(404).json("게시글을 찾을 수 없습니다.");
+    }
+
+    res.json({ message: "게시글이 삭제되었습니다!" });
+  } catch (error) {
+    console.error("게시글 삭제 오류", error);
     res.status(500).json({ error: "서버 오류" });
   }
 };
