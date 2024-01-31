@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import instance from "../lib/axios";
 import { useState, useContext } from "react";
-import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Navigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../components/UserContext";
 
 export interface FormValue {
   username: string;
@@ -22,13 +22,7 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<FormValue> = async (data) => {
     try {
-      const response = await axios.post("http://localhost:4000/user/login", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // axios request에도 cookie 정보가 포함되도록 설정
-        withCredentials: true,
-      });
+      const response = await instance.post("/user/login", data);
       if (response.status === 200) {
         setUserInfo(response.data);
         setRedirect(true);

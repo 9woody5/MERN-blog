@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useContext } from "react";
-import axios from "axios";
+import instance from "../lib/axios";
 import { UserContext, UserInfo } from "./UserContext";
 
 export default function Header() {
@@ -8,9 +8,7 @@ export default function Header() {
   useEffect(() => {
     const loadUserInfo = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/user/profile", {
-          withCredentials: true,
-        });
+        const response = await instance.get("/user/profile");
         if (response.status === 200) {
           const userData: UserInfo = response.data;
           setUserInfo(userData);
@@ -25,14 +23,8 @@ export default function Header() {
   }, []);
 
   function logout() {
-    axios
-      .post(
-        "http://localhost:4000/user/logout",
-        {},
-        {
-          withCredentials: true,
-        }
-      )
+    instance
+      .post("/user/logout")
       .then((response) => {
         if (response.data === "Ok") {
           // window.location.reload();

@@ -127,6 +127,12 @@ header {
 }
 
 .post_page {
+  .post_headline {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   .img_box {
     max-height: 300px;
     overflow: hidden;
@@ -154,7 +160,7 @@ header {
   .author {
     display: block;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     font-size: 0.8rem;
     font-weight: bold;
   }
@@ -193,4 +199,57 @@ header {
     border-radius: 5px;
     font-weight: bold;
   }
+  .like_btn {
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: oldlace;
+    margin: 10px 0 20px;
+    color: #000;
+  }
+}
+
+.comment_list {
+  list-style: none;
+  margin: 50px 0 20px;
+  display: flex;
+  flex-direction: column;
+  > span {
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+}
+.new_comment {
+  margin-bottom: 20px;
+  form {
+    display: flex;
+    gap: 10px;
+    justify-content: start;
+    align-items: center;
+  }
+  input {
+    margin-bottom: 0;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    height: 45px;
+    background-color: rgb(241, 235, 253);
+  }
+}
+.submit {
+  border-radius: 5px;
+  width: 80px;
+  margin-top: 0;
+  background-color: rgb(60, 49, 126);
+  display: flex;
+  height: 45px;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
 }

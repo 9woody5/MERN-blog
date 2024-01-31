@@ -1,15 +1,15 @@
-import Post from "../Post";
+import instance from "../lib/axios";
+import Post from "../components/Post";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { PostProps } from "./../Post";
+import { PostProps } from "../components/Post";
 
 export default function IndexPage() {
   const [posts, setPosts] = useState<PostProps[]>([]);
 
   // 홈페이지에 mount 했을 때 실행할 내용
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/post")
+    instance
+      .get("/post")
       .then((response) => {
         // 데이터는 response.data에서 사용할 수 있습니다.
         console.log(response.data);

@@ -1,11 +1,13 @@
-import axios from "axios";
+import instance from "../lib/axios";
 import { formatISO9075 } from "date-fns";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { UserContext } from "../UserContext";
-import { PostProps } from "../Post";
+import { UserContext } from "../components/UserContext";
+import { PostProps } from "../components/Post";
+import CommentList from "../components/CommentList";
+import { GoHeartFill } from "react-icons/go";
 
 export default function PostPage() {
   const [postInfo, setPostInfo] = useState<PostProps | null>(null);
@@ -14,7 +16,7 @@ export default function PostPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/post/${id}`).then((response) => setPostInfo(response.data));
+    instance.get(`/post/${id}`).then((response) => setPostInfo(response.data));
   }, [id]);
 
   const handleDelete = async () => {
@@ -22,9 +24,7 @@ export default function PostPage() {
 
     if (userConfirmed) {
       try {
-        await axios.delete(`http://localhost:4000/post/${id}`, {
-          withCredentials: true,
-        });
+        await instance.delete(`/post/${id}`);
         alert("게시글이 삭제되었습니다 ✅");
         navigate("/");
       } catch (error) {
@@ -37,28 +37,32 @@ export default function PostPage() {
 
   return (
     <div className="post_page">
-      <h1>{postInfo.title}</h1>
-      <time>{formatISO9075(new Date(postInfo.createdAt))}</time>
-      <span className="author">by @{postInfo.author.username}</span>
-      {userInfo?.id === postInfo.author._id && (
-        <div className="options">
-          <Link className="edit_btn" to={`/edit/${postInfo._id}`}>
-            <FaEdit size={17} />
-            수정
-          </Link>
-          <button className="delete_btn" onClick={handleDelete}>
-            <MdDelete size={20} />
-            삭제
-          </button>
-        </div>
-      )}
+      <div className="post_headline">
+        <h1>{postInfo.title}</h1>
+        <span className="author">by @{postInfo.author.username}</span>
+        <time>{formatISO9075(new Date(postInfo.createdAt))}</time>
+        {userInfo?.id === postInfo.author._id && (
+          <div className="options">
+            <Link className="edit_btn" to={`/edit/${postInfo._id}`}>
+              <FaEdit size={17} />
+              수정
+            </Link>
+            <button className="delete_btn" onClick={handleDelete}>
+              <MdDelete size={20} />
+              삭제
+            </button>
+          </div>
+        )}
+        <button className="like_btn">
+          <GoHeartFill size={35} color="#f50d53" />
+          <span>35</span>
+        </button>
+      </div>
       <div className="img_box">
         <img src={`http://localhost:4000/${postInfo?.thumb}`} alt="" />
       </div>
       <div className="content" dangerouslySetInnerHTML={{ __html: postInfo.content }} />
-      <div className="comment_box">
-        <span>댓글</span>
-      </div>
+      <CommentList />
     </div>
   );
 }

@@ -1,0 +1,19 @@
+.comment_item {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  margin-top: 15px;
+  padding: 15px 10px;
+  // background-color: rgb(251, 251, 239);
+  color: darkslategrey;
+}
+.comment_box {
+  display: flex;
+  gap: 20px;
+  padding: 0 10px;
+}
+.username {
+  font-weight: bold;
+  min-width: fit-content;
+  color: darkslateblue;
+}

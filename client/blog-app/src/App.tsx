@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.scss";
-import Layout from "./Layout";
+import Layout from "./components/Layout";
 import IndexPage from "./pages/IndexPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import { UserContextProvider } from "./UserContext";
+import { UserContextProvider } from "./components/UserContext";
 import CreatePost from "./pages/CreatePost";
 import PostPage from "./pages/PostPage";
 import EditPage from "./pages/EditPost";

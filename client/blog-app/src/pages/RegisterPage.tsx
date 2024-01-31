@@ -1,4 +1,4 @@
-import axios from "axios";
+import instance from "../lib/axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FormValue } from "./LoginPage";
 
@@ -12,7 +12,7 @@ export default function RegisterPage() {
 
   const checkUsernameAvailability = async (username: string) => {
     try {
-      const response = await axios.get(`http://localhost:4000/user/check-username?username=${username}`);
+      const response = await instance.get(`/user/check-username?username=${username}`);
       return response.data.available;
     } catch (error) {
       console.error("유저 이름 확인 오류", error);
@@ -31,11 +31,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await axios.post("http://localhost:4000/user/register", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await instance.post("/user/register");
       console.log("요청 성공", response.data);
       alert("회원 가입이 완료되었습니다!");
     } catch (error) {
