@@ -30,7 +30,7 @@ const Comment = () => {
     };
 
     getComments();
-  }, []);
+  }, [id]);
 
   return (
     <>
