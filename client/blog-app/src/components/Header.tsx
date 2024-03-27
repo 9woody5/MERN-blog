@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import instance from "../lib/axios";
 import { UserContext, UserInfo } from "./UserContext";
+import logo from "../assets/img/logo.svg";
 
 export default function Header() {
   const { userInfo, setUserInfo } = useContext(UserContext);
@@ -42,12 +43,12 @@ export default function Header() {
   return (
     <header>
       <Link to="/" className="logo">
-        MyBlog
+        <img className="logo" src={logo} alt="logo" width={150} height="auto" />
       </Link>
       <nav>
         {username && (
           <>
-            <span>Hi, {username}</span>
+            <span className="greeting">Hi, {username}</span>
             <Link to="/create">글 쓰기</Link>
             <a onClick={logout}>로그아웃</a>
           </>

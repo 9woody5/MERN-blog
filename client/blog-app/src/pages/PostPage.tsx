@@ -1,23 +1,31 @@
 import instance from "../lib/axios";
 import { formatISO9075 } from "date-fns";
-import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../components/UserContext";
-import { PostProps } from "../components/Post";
+import { PostProps } from "../components/PostList";
 import CommentList from "../components/CommentList";
 import { GoHeartFill } from "react-icons/go";
+import { IoChatboxEllipses } from "react-icons/io5";
 
 export default function PostPage() {
   const [postInfo, setPostInfo] = useState<PostProps | null>(null);
+  const [likes, setLikes] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [comments, setComments] = useState(0);
   const { userInfo } = useContext(UserContext);
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     instance.get(`/post/${id}`).then((response) => setPostInfo(response.data));
+    // instance.get(`/comments/${id}`).then((response) => setComments(response.data.length));
   }, [id]);
+
+  const handleLike = () => {
+    setLiked(true);
+    setLikes(likes + 1);
+  };
 
   const handleDelete = async () => {
     const userConfirmed = window.confirm("게시글을 삭제하시겠습니까?");
@@ -44,25 +52,31 @@ export default function PostPage() {
         {userInfo?.id === postInfo.author._id && (
           <div className="options">
             <Link className="edit_btn" to={`/edit/${postInfo._id}`}>
-              <FaEdit size={17} />
               수정
             </Link>
             <button className="delete_btn" onClick={handleDelete}>
-              <MdDelete size={20} />
               삭제
             </button>
           </div>
         )}
-        <button className="like_btn">
-          <GoHeartFill size={35} color="#f50d53" />
-          <span>35</span>
-        </button>
       </div>
-      <div className="img_box">
+      {/* <div className="img_box">
         <img src={`http://localhost:4000/${postInfo?.thumb}`} alt="" />
-      </div>
+      </div> */}
       <div className="content" dangerouslySetInnerHTML={{ __html: postInfo.content }} />
-      <CommentList />
+      <div>
+        <div className="interaction_area">
+          <button className="like_btn" onClick={handleLike}>
+            <GoHeartFill size={22} color={liked ? "#038b83" : "#999"} />
+            <span>{likes}</span>
+          </button>
+          <span className="comment_title">
+            <IoChatboxEllipses size={22} color={comments > 0 ? "#038b83" : "#999"} />
+            <span className="count">{comments}</span>
+          </span>
+        </div>
+        <CommentList />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import instance from "../lib/axios";
-import Post from "../components/Post";
+import Post from "../components/PostList";
 import { useEffect, useState } from "react";
-import { PostProps } from "../components/Post";
+import { PostProps } from "../components/PostList";
+import styles from "../styles/PostList.module.scss";
 
 export default function IndexPage() {
   const [posts, setPosts] = useState<PostProps[]>([]);
@@ -20,5 +21,9 @@ export default function IndexPage() {
       });
   }, []);
 
-  return <>{posts.length > 0 && posts.map((post: PostProps, id: number) => <Post key={id} {...post} />)}</>;
+  return (
+    <div className={styles.list_wrapper}>
+      {posts.length > 0 && posts.map((post: PostProps, id: number) => <Post key={id} {...post} />)}
+    </div>
+  );
 }

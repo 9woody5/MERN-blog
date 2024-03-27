@@ -1,0 +1,82 @@
+.list_wrapper {
+  display: grid;
+  gap: 20px;
+  @media screen and (min-width: 960px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media screen and (min-width: 568px) and (max-width: 959px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.post {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+  .post_wrapper {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 10px;
+    transition: all 0.3s;
+    margin: 0 10px;
+
+    &:hover {
+      box-shadow: rgba(0, 0, 0, 0.163) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    }
+    img {
+      border-radius: 15px;
+    }
+  }
+  @media screen and (min-width: 768px) {
+    .img_box {
+      width: 100%;
+      height: 300px;
+      position: relative;
+      img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  .texts {
+    padding: 10px;
+    h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+  }
+
+  .info {
+    margin: 6px 0;
+    color: #888;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: flex;
+    gap: 10px;
+  }
+  .author {
+    color: #038b83;
+  }
+  .summary {
+    margin: 10px 0;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+}
