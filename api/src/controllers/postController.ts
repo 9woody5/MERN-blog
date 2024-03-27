@@ -8,8 +8,10 @@ dotenv.config();
 const secret = process.env.SECRET;
 
 export const createPost = async (req: Request, res: Response) => {
-  if (!req.file) {
-    return res.status(400).json("파일이 업로드되지 않았습니다.");
+  const { title, summary, content } = req.body;
+
+  if (!title || !req.file || !content) {
+    return res.status(400).json("제목, 썸네일 이미지, 내용은 필수 입력 항목입니다.");
   }
   const { originalname, path } = req.file;
   const parts = originalname.split(".");
@@ -24,17 +26,16 @@ export const createPost = async (req: Request, res: Response) => {
 
   if (!info || typeof info !== "object") {
     return res.status(401).json("로그인이 필요합니다");
-  } else {
-    const { title, summary, content } = req.body;
-    const postDoc = await Post.create({
-      title,
-      summary,
-      content,
-      thumb: newPath,
-      author: info.id,
-    });
-    res.json(postDoc);
   }
+
+  const postDoc = await Post.create({
+    title,
+    summary,
+    content,
+    thumb: newPath,
+    author: info.id,
+  });
+  res.json(postDoc);
 };
 
 export const updatePost = async (req: Request, res: Response) => {

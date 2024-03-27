@@ -67,6 +67,12 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const getUserProfile = (req: Request, res: Response) => {
   const { token } = req.cookies;
+
+  if (!token) {
+    // 토큰이 없는 경우, 로그인하지 않은 상태로 간주하여 특정 메시지를 응답함
+    return res.status(200).json("로그인이 필요합니다.");
+  }
+
   jwt.verify(token, secret as string, {}, (err, info) => {
     if (err) {
       return res.status(401).json("로그인이 필요합니다");

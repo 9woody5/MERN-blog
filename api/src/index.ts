@@ -10,6 +10,7 @@ import * as dotenv from "dotenv";
 import userRouter from "./routes/userRouter";
 import { fileURLToPath } from "url";
 import postRouter from "./routes/postRouter";
+import commentRouter from "./routes/commentRouter";
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
@@ -47,6 +48,7 @@ app.use(uploadMiddleware.single("file"));
 
 // router 세팅
 app.use("/user", userRouter);
+app.use(commentRouter);
 app.use("/post", postRouter);
 
 // 서버 실행
