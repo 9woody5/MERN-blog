@@ -55,7 +55,8 @@ export const updatePost = async (req: Request, res: Response) => {
   if (!info || typeof info !== "object") {
     return res.status(401).json("로그인이 필요합니다");
   } else {
-    const { id, title, summary, content } = req.body;
+    const { id } = req.params;
+    const { title, summary, content } = req.body;
     const updatedPost = await Post.findByIdAndUpdate(
       id,
       {
