@@ -6,7 +6,7 @@ const CommentList = () => {
     <div className="group_comment">
       <NewComment />
       <ul className="comment_list">
-        <li>
+        {/* <li>
           <Comment />
         </li>
         <li>
@@ -14,7 +14,7 @@ const CommentList = () => {
         </li>
         <li>
           <Comment />
-        </li>
+        </li> */}
       </ul>
     </div>
   );

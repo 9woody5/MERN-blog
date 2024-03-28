@@ -40,7 +40,7 @@ export default function LoginPage() {
   }
   return (
     <form className="login_form" onSubmit={handleSubmit(onSubmit)}>
-      <h1>Login</h1>
+      <h1>로그인</h1>
       <input
         type="text"
         placeholder="username"
@@ -57,7 +57,7 @@ export default function LoginPage() {
         })}
       />
       {errors.password && <small role="alert">{errors.password.message}</small>}
-      <button type="submit">Login</button>
+      <button type="submit">로그인</button>
     </form>
   );
 }

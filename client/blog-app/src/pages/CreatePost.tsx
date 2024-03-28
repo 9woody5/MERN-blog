@@ -44,16 +44,16 @@ export default function CreatePost() {
 
   return (
     <form onSubmit={createNewPost}>
-      <input type="title" placeholder="{'Title'}" value={title} onChange={(event) => setTitle(event.target.value)} />
+      <input type="title" placeholder="제목" value={title} onChange={(event) => setTitle(event.target.value)} />
       <input
         type="summary"
-        placeholder="{'Summary'}"
+        placeholder="한 줄 소개"
         value={summary}
         onChange={(event) => setSummary(event.target.value)}
       />
       <input type="file" onChange={(event) => setFiles(event.target.files)} />
       <Editor value={content} onChange={setContent} />
-      <button style={{ marginTop: 5 }}>Create Post</button>
+      <button style={{ marginTop: 5 }}>게시글 등록하기</button>
     </form>
   );
 }

@@ -42,7 +42,7 @@ export default function RegisterPage() {
 
   return (
     <form className="register_form" onSubmit={handleSubmit(onSubmit)}>
-      <h1>Register</h1>
+      <h1>회원가입</h1>
       <input
         type="text"
         placeholder="username"
@@ -61,7 +61,7 @@ export default function RegisterPage() {
         })}
       />
       {errors.password && <small role="alert">{errors.password.message}</small>}
-      <button type="submit">Register</button>
+      <button type="submit">가입하기</button>
     </form>
   );
 }

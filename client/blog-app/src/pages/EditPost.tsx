@@ -31,9 +31,17 @@ export default function EditPost() {
     if (files) {
       data.set("file", files[0]);
     }
-    const response = await instance.put("/post", data);
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+
+    const response = await instance.put(`/post/${id}`, data, config);
 
     if (response.status === 200) {
+      alert("수정이 완료되었습니다!");
       setRedirect(true);
     }
   }
@@ -44,16 +52,18 @@ export default function EditPost() {
 
   return (
     <form onSubmit={updatePost}>
-      <input type="title" placeholder="{'Title'}" value={title} onChange={(event) => setTitle(event.target.value)} />
+      <input type="title" placeholder="제목" value={title} onChange={(event) => setTitle(event.target.value)} />
       <input
         type="summary"
-        placeholder="{'Summary'}"
+        placeholder="한 줄 소개"
         value={summary}
         onChange={(event) => setSummary(event.target.value)}
       />
       <input type="file" onChange={(event) => setFiles(event.target.files)} />
       <Editor value={content} onChange={setContent} />
-      <button style={{ marginTop: 5 }}>Update Post</button>
+      <button style={{ marginTop: 5 }} type="submit">
+        수정 완료
+      </button>
     </form>
   );
 }

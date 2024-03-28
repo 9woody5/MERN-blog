@@ -23,8 +23,13 @@ export default function PostPage() {
   }, [id]);
 
   const handleLike = () => {
-    setLiked(true);
-    setLikes(likes + 1);
+    if (!liked) {
+      setLiked(true);
+      setLikes(likes + 1);
+    } else {
+      setLiked(false);
+      setLikes(likes - 1);
+    }
   };
 
   const handleDelete = async () => {
@@ -41,7 +46,7 @@ export default function PostPage() {
     }
   };
 
-  if (!postInfo) return <div>Loading..</div>;
+  if (!postInfo) return <div>페이지 로딩 중..</div>;
 
   return (
     <div className="post_page">

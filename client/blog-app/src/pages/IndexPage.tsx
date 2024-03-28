@@ -12,8 +12,7 @@ export default function IndexPage() {
     instance
       .get("/post")
       .then((response) => {
-        // 데이터는 response.data에서 사용할 수 있습니다.
-        console.log(response.data);
+        // 데이터는 response.data에서 사용할 수 있음
         setPosts(response.data);
       })
       .catch((error) => {
