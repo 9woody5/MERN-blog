@@ -10,6 +10,8 @@ const secret = process.env.SECRET;
 
 export const registerUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
+  console.log(password);
+  console.log(req.body);
   try {
     const userDoc = await User.create({
       username,
@@ -17,7 +19,8 @@ export const registerUser = async (req: Request, res: Response) => {
     });
     res.json(userDoc);
   } catch (err) {
-    res.status(400).json(err);
+    console.error("회원 가입 오류", err);
+    res.status(400).json({ error: "회원 가입 오류 발생" });
   }
 };
 
