@@ -34,14 +34,14 @@ export default function RegisterPage() {
       const response = await instance.post("/user/register");
       console.log("요청 성공", response.data);
       alert("회원 가입이 완료되었습니다!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("요청 오류", error);
       alert("가입에 실패했습니다. 잠시 후 다시 시도해 주세요.");
     }
   };
 
   return (
-    <form className="register_form" onSubmit={handleSubmit(onSubmit)}>
+    <form method="POST" className="register_form" onSubmit={handleSubmit(onSubmit)}>
       <h1>회원가입</h1>
       <input
         type="text"
