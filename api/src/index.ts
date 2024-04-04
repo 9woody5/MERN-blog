@@ -18,7 +18,6 @@ const app = express();
 
 // const salt = bcrypt.genSaltSync(10);
 const secret = process.env.SECRET;
-
 // express 세팅
 app.use(cors({ credentials: true, origin: process.env.CLIENT_PORT }));
 app.use(express.json());
