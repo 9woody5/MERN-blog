@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { FormValue } from "./LoginPage";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import { useState } from "react";
 
 export default function RegisterPage() {
   const [errMsg, setErrMsg] = useState<string | null>(null);
