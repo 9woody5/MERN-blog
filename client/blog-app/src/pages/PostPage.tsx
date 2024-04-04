@@ -19,7 +19,7 @@ export default function PostPage() {
 
   useEffect(() => {
     instance.get(`/post/${id}`).then((response) => setPostInfo(response.data));
-    // instance.get(`/comments/${id}`).then((response) => setComments(response.data.length));
+    instance.get(`/comments/${id}`).then((response) => setComments(response.data.length));
   }, [id]);
 
   const handleLike = () => {
