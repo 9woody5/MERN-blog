@@ -20,7 +20,10 @@ const Post: React.FC<PostProps> = ({ _id, title, summary, thumb, createdAt, auth
     <Link to={`/post/${_id}`} className={styles.post}>
       <div className={styles.post_wrapper}>
         <div className={styles.img_box}>
-          <img src={`http://localhost:4000/${thumb.replace(/\\/g, "/")}`} alt="" />
+          <img
+            src={`https://port-0-mern-blog-754g42alul99nxi.sel5.cloudtype.app/${thumb.replace(/\\/g, "/")}`}
+            alt=""
+          />
         </div>
         <div className={styles.texts}>
           <h2 className={styles.title}>{title}</h2>
