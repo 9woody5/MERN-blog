@@ -1,8 +1,11 @@
 import instance from "../lib/axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FormValue } from "./LoginPage";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 export default function RegisterPage() {
+  const [errMsg, setErrMsg] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -33,10 +36,11 @@ export default function RegisterPage() {
     try {
       const response = await instance.post("/user/register");
       console.log("요청 성공", response.data);
+      setErrMsg(null);
       alert("회원 가입이 완료되었습니다!");
     } catch (error: any) {
       console.error("요청 오류", error);
-      alert("가입에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      setErrMsg("가입에 실패했습니다. 잠시 후 다시 시도해 주세요.");
     }
   };
 
@@ -61,6 +65,12 @@ export default function RegisterPage() {
         })}
       />
       {errors.password && <small role="alert">{errors.password.message}</small>}
+      {errMsg && (
+        <Alert severity="error">
+          <AlertTitle>오류</AlertTitle>
+          {errMsg}
+        </Alert>
+      )}
       <button type="submit">가입하기</button>
     </form>
   );
