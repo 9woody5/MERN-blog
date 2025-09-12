@@ -9,7 +9,6 @@ const secret = process.env.SECRET;
 
 export const createPost = async (req: Request, res: Response) => {
   const { title, summary, content } = req.body;
-
   if (!title || !req.file || !content) {
     return res.status(400).json("제목, 썸네일 이미지, 내용은 필수 입력 항목입니다.");
   }

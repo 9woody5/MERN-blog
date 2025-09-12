@@ -65,9 +65,9 @@ export default function PostPage() {
           </div>
         )}
       </div>
-      {/* <div className="img_box">
-        <img src={`http://localhost:4000/${postInfo?.thumb}`} alt="" />
-      </div> */}
+      <div className="img_box">
+        <img src={`${instance.defaults.baseURL}/${postInfo.thumb.replace(/\\/g, "/")}`} alt="" />
+      </div>
       <div className="content" dangerouslySetInnerHTML={{ __html: postInfo.content }} />
       <div>
         <div className="interaction_area">

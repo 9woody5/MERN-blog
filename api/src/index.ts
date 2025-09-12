@@ -43,7 +43,6 @@ const storage = multer.diskStorage({
 });
 
 const uploadMiddleware = multer({ storage: storage });
-app.use(uploadMiddleware.single("file"));
 
 // router 세팅
 app.use("/user", userRouter);

@@ -15,7 +15,17 @@ export default function CreatePost() {
   async function createNewPost(e: React.FormEvent) {
     e.preventDefault();
 
+    
+
     try {
+      console.log("[CreatePost] submitting", {
+        title,
+        summaryLength: summary.length,
+        contentLength: content.length,
+        hasFile: Boolean(files && files[0]),
+        fileName: files && files[0] ? files[0].name : null,
+        fileSize: files && files[0] ? files[0].size : null,
+      });
       const data = new FormData();
       data.set("title", title);
       data.set("summary", summary);
@@ -23,18 +33,19 @@ export default function CreatePost() {
       if (files) {
         data.set("file", files[0]);
       }
-      const response = await instance.post("/post", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await instance.post("/post", data);
       if (response.status === 200) {
         setRedirect(true);
       }
     } catch (err: unknown) {
-      if (err instanceof AxiosError && err.response?.status === 400) {
-        console.error("요청 오류", err);
-        alert("제목, 썸네일 이미지, 내용은 필수 입력 항목입니다❗");
+      if (err instanceof AxiosError) {
+        console.error("전체 에러 정보:", err.response);
+        console.error("응답 데이터:", err.response?.data);
+        console.error("응답 상태:", err.response?.status);
+        
+        if (err.response?.status === 400) {
+          alert(`서버 에러: ${err.response.data?.message || "알 수 없는 오류"}`);
+        }
       }
     }
   }
