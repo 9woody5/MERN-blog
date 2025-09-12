@@ -35,11 +35,11 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await instance.post("/user/register");
+      const response = await instance.post("/user/register", data);
       console.log("요청 성공", response.data);
       setErrMsg(null);
       alert("회원 가입이 완료되었습니다!");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("요청 오류", error);
       setErrMsg("가입에 실패했습니다. 잠시 후 다시 시도해 주세요.");
     }
