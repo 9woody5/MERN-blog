@@ -18,17 +18,30 @@ export default function PostPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    instance.get(`/post/${id}`).then((response) => setPostInfo(response.data));
-    instance.get(`/comments/${id}`).then((response) => setComments(response.data.length));
+    instance.get(`/post/${id}`).then((response) => {
+      setPostInfo(response.data);
+      setLikes(response.data.likes || 0);
+      setLiked(Boolean(response.data.liked));
+    });
+    instance.get(`/post/${id}/comments`).then((response) => setComments(response.data.length));
   }, [id]);
 
-  const handleLike = () => {
-    if (!liked) {
-      setLiked(true);
-      setLikes(likes + 1);
-    } else {
-      setLiked(false);
-      setLikes(likes - 1);
+  const handleLike = async () => {
+    if (!id) return;
+    const prevLiked = liked;
+    const prevLikes = likes;
+    // Optimistic update
+    setLiked(!prevLiked);
+    setLikes(prevLiked ? prevLikes - 1 : prevLikes + 1);
+    try {
+      const res = await instance.post(`/post/${id}/like`);
+      setLikes(res.data.likes);
+      setLiked(res.data.liked);
+    } catch (e) {
+      // rollback
+      setLiked(prevLiked);
+      setLikes(prevLikes);
+      console.error("좋아요 오류", e);
     }
   };
 
@@ -80,7 +93,7 @@ export default function PostPage() {
             <span className="count">{comments}</span>
           </span>
         </div>
-        <CommentList />
+        <CommentList onCountChange={(n) => setComments(n)} />
       </div>
     </div>
   );

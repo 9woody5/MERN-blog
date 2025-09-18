@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import styles from "../styles/PostList.module.scss";
 import instance from "../lib/axios";
 
+const resolveAssetBase = () => instance.defaults.baseURL;
+
 export interface PostProps {
   _id: string;
   title: string;
@@ -21,7 +23,7 @@ const Post: React.FC<PostProps> = ({ _id, title, summary, thumb, createdAt, auth
     <Link to={`/post/${_id}`} className={styles.post}>
       <div className={styles.post_wrapper}>
         <div className={styles.img_box}>
-          <img src={`${instance.defaults.baseURL}/${thumb.replace(/\\/g, "/")}`} alt="" />
+          <img src={`${resolveAssetBase()}/${thumb.replace(/\\/g, "/")}`} alt="" />
         </div>
         <div className={styles.texts}>
           <h2 className={styles.title}>{title}</h2>

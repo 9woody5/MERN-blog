@@ -9,6 +9,7 @@ const PostSchema = new Schema(
     thumb: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User" },
     likes: { type: Number, default: 0 },
+    likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   },
   {

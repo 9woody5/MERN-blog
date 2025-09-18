@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import Post from "../models/Post";
+import { Types } from "mongoose";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -96,9 +97,52 @@ export const getPostById = async (req: Request, res: Response) => {
     if (!postDoc) {
       return res.status(404).json("게시글을 찾을 수 없습니다.");
     }
-    res.json(postDoc);
+    // liked 계산 (쿠키 토큰이 있을 때만)
+    let liked = false;
+    try {
+      const { token } = req.cookies as any;
+      if (token) {
+        const info = jwt.verify(token, secret as string, {}) as jwt.JwtPayload;
+        const userId = (info && typeof info === "object" && (info as any).id) ? String((info as any).id) : null;
+        if (userId && Array.isArray((postDoc as any).likedBy)) {
+          liked = (postDoc as any).likedBy.some((u: any) => String(u) === userId);
+        }
+      }
+    } catch {}
+
+    res.json({ ...(postDoc.toObject ? postDoc.toObject() : postDoc), liked });
   } catch (error) {
     console.error("게시글 조회 오류", error);
+    res.status(500).json({ error: "서버 오류" });
+  }
+};
+
+export const toggleLike = async (req: Request, res: Response) => {
+  const { id } = req.params; // post id
+  const { token } = req.cookies;
+  try {
+    const info = jwt.verify(token, secret as string, {}) as jwt.JwtPayload;
+    if (!info || typeof info !== "object") return res.status(401).json("로그인이 필요합니다");
+
+    const userId = info.id;
+    const post = await Post.findById(id);
+    if (!post) return res.status(404).json("게시글을 찾을 수 없습니다.");
+
+    const likedByIds: Types.ObjectId[] = (post.get("likedBy") as Types.ObjectId[] | undefined) ?? [];
+    const hasLiked = likedByIds.some((u) => String(u) === String(userId));
+    if (hasLiked) {
+      const next = likedByIds.filter((u) => String(u) !== String(userId));
+      post.set("likedBy", next);
+      post.likes = Math.max(0, (post.likes || 0) - 1);
+    } else {
+      post.set("likedBy", [...likedByIds, new Types.ObjectId(String(userId))]);
+      post.likes = (post.likes || 0) + 1;
+    }
+
+    await post.save();
+    res.json({ likes: post.likes, liked: !hasLiked });
+  } catch (e) {
+    console.error("좋아요 토글 오류", e);
     res.status(500).json({ error: "서버 오류" });
   }
 };
