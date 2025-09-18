@@ -180,6 +180,8 @@ header {
     border-radius: 5px;
     font-size: 13px;
     transition: all 0.3s;
+    width: auto;
+    margin-top: 0;
     &:hover {
       background-color: #194745;
     }
