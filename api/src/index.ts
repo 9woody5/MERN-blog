@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import * as mongoose from "mongoose";
@@ -19,7 +19,17 @@ const app = express();
 // const salt = bcrypt.genSaltSync(10);
 const secret = process.env.SECRET;
 // express 세팅
-app.use(cors({ credentials: true, origin: process.env.CLIENT_PORT }));
+const allowedOrigins = (process.env.CLIENT_PORT || "").split(",").map((s) => s.trim()).filter(Boolean);
+const corsOptions: CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(cookieparser());
 
