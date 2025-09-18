@@ -3,8 +3,13 @@ import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 import instance from "../lib/axios";
 import { useParams } from "react-router-dom";
+import { CommentType } from "./CommentList";
 
-const NewComment = () => {
+interface NewCommentProps {
+  onCreated?: (created: CommentType) => void;
+}
+
+const NewComment = ({ onCreated }: NewCommentProps) => {
   const { userInfo } = useContext(UserContext);
   const [commentContent, setCommentContent] = useState("");
   const { id } = useParams();
@@ -26,6 +31,7 @@ const NewComment = () => {
 
       console.log("댓글 등록 완료", response.data);
       setCommentContent("");
+      onCreated?.(response.data);
     } catch (err) {
       console.error("댓글 등록 실패", err);
     }

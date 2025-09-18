@@ -17,6 +17,11 @@ const CommentSchema = new Schema(
       ref: "Post",
       required: true,
     },
+    parent: {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+      default: null,
+    },
     createdAt: {
       type: Date,
       default: Date.now,

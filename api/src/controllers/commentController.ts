@@ -9,15 +9,11 @@ const secret = process.env.SECRET;
 
 // 댓글 작성
 export const createComment = async (req: Request, res: Response) => {
-  const { content, author } = req.body;
+  const { content, author, parent } = req.body;
   const { postId } = req.params;
 
   try {
-    const newComment = await Comment.create({
-      content,
-      author,
-      post: postId,
-    });
+    const newComment = await Comment.create({ content, author, post: postId, parent: parent || null });
 
     // 해당 게시글에 댓글 추가
     const targetPost = await Post.findById(postId);
@@ -28,7 +24,8 @@ export const createComment = async (req: Request, res: Response) => {
     targetPost.comments.push(newComment._id);
     await targetPost.save();
 
-    res.status(201).json(newComment);
+    const populated = await newComment.populate("author", ["username"]);
+    res.status(201).json(populated);
   } catch (error) {
     res.status(500).json({ message: "댓글 생성 오류", error });
   }
@@ -39,7 +36,10 @@ export const getCommentsByPostId = async (req: Request, res: Response) => {
   const { postId } = req.params;
 
   try {
-    const comments = await Comment.find().populate("author").exec();
+    const comments = await Comment.find({ post: postId })
+      .populate("author", ["username"]) 
+      .sort({ createdAt: -1 })
+      .exec();
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).json({ message: "댓글 조회 오류", error });
@@ -52,7 +52,7 @@ export const updateComment = async (req: Request, res: Response) => {
   const { content } = req.body;
 
   try {
-    const updatedComment = await Comment.findByIdAndUpdate(id, { content }, { new: true });
+    const updatedComment = await Comment.findByIdAndUpdate(id, { content }, { new: true }).populate("author", ["username"]);
     res.status(200).json(updatedComment);
   } catch (error) {
     res.status(500).json({ message: "댓글 수정 오류", error });
