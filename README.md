@@ -18,6 +18,12 @@
 - 좋아요 기능
 
 <br>
+[회원가입 페이지]
+<img width="2850" height="1462" alt="image" src="https://github.com/user-attachments/assets/864dbea8-60a0-4f6f-bfca-cb88ab7f4aa8" />
+
+
+
+<br>
 
 ## 🛠 FRONTEND
 
@@ -37,7 +43,7 @@
 
 ---
 
-### 상세 기능(작업 중)
+### 상세 기능
 
 - 로그인/회원가입✅
 - 게시글 작성✅, 수정✅, 삭제✅
