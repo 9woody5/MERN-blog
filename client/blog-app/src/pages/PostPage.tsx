@@ -13,36 +13,48 @@ export default function PostPage() {
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [comments, setComments] = useState(0);
+  const [isLiking, setIsLiking] = useState(false);
   const { userInfo } = useContext(UserContext);
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    instance.get(`/post/${id}`).then((response) => {
-      setPostInfo(response.data);
-      setLikes(response.data.likes || 0);
-      setLiked(Boolean(response.data.liked));
-    });
-    instance.get(`/post/${id}/comments`).then((response) => setComments(response.data.length));
+    instance
+      .get(`/post/${id}`)
+      .then((res) => {
+        setPostInfo(res.data);
+        setLikes(res.data.likes || 0);
+        setLiked(Boolean(res.data.liked));
+        setComments(res.data.commentCount || 0);
+      })
+      .catch((e) => {
+        console.error("게시글 조회 오류", e);
+      });
   }, [id]);
 
-  const handleLike = async () => {
-    if (!id) return;
+  const handleLike = () => {
+    if (!id || isLiking) return;
+
     const prevLiked = liked;
     const prevLikes = likes;
-    // Optimistic update
     setLiked(!prevLiked);
     setLikes(prevLiked ? prevLikes - 1 : prevLikes + 1);
-    try {
-      const res = await instance.post(`/post/${id}/like`);
-      setLikes(res.data.likes);
-      setLiked(res.data.liked);
-    } catch (e) {
-      // rollback
-      setLiked(prevLiked);
-      setLikes(prevLikes);
-      console.error("좋아요 오류", e);
-    }
+    setIsLiking(true);
+
+    instance
+      .post(`/post/${id}/like`)
+      .then((res) => {
+        setLikes(res.data.likes);
+        setLiked(res.data.liked);
+      })
+      .catch((e) => {
+        setLiked(prevLiked);
+        setLikes(prevLikes);
+        console.error("좋아요 오류", e);
+      })
+      .finally(() => {
+        setIsLiking(false);
+      });
   };
 
   const handleDelete = async () => {
@@ -79,9 +91,19 @@ export default function PostPage() {
         )}
       </div>
       <div className="img_box">
-        <img src={`${instance.defaults.baseURL}/${postInfo.thumb.replace(/\\/g, "/")}`} alt="" />
+        <img
+          src={`${instance.defaults.baseURL}/${postInfo.thumb.replace(
+            /\\/g,
+            "/"
+          )}`}
+          alt=""
+          loading="lazy"
+        />
       </div>
-      <div className="content" dangerouslySetInnerHTML={{ __html: postInfo.content }} />
+      <div
+        className="content"
+        dangerouslySetInnerHTML={{ __html: postInfo.content }}
+      />
       <div>
         <div className="interaction_area">
           <button className="like_btn" onClick={handleLike}>
@@ -89,7 +111,10 @@ export default function PostPage() {
             <span>{likes}</span>
           </button>
           <span className="comment_title">
-            <IoChatboxEllipses size={22} color={comments > 0 ? "#038b83" : "#999"} />
+            <IoChatboxEllipses
+              size={22}
+              color={comments > 0 ? "#038b83" : "#999"}
+            />
             <span className="count">{comments}</span>
           </span>
         </div>
