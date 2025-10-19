@@ -15,17 +15,7 @@ export default function CreatePost() {
   async function createNewPost(e: React.FormEvent) {
     e.preventDefault();
 
-    
-
     try {
-      console.log("[CreatePost] submitting", {
-        title,
-        summaryLength: summary.length,
-        contentLength: content.length,
-        hasFile: Boolean(files && files[0]),
-        fileName: files && files[0] ? files[0].name : null,
-        fileSize: files && files[0] ? files[0].size : null,
-      });
       const data = new FormData();
       data.set("title", title);
       data.set("summary", summary);
@@ -42,9 +32,11 @@ export default function CreatePost() {
         console.error("전체 에러 정보:", err.response);
         console.error("응답 데이터:", err.response?.data);
         console.error("응답 상태:", err.response?.status);
-        
+
         if (err.response?.status === 400) {
-          alert(`서버 에러: ${err.response.data?.message || "알 수 없는 오류"}`);
+          alert(
+            `서버 에러: ${err.response.data?.message || "알 수 없는 오류"}`
+          );
         }
       }
     }
@@ -55,7 +47,12 @@ export default function CreatePost() {
 
   return (
     <form onSubmit={createNewPost}>
-      <input type="title" placeholder="제목" value={title} onChange={(event) => setTitle(event.target.value)} />
+      <input
+        type="title"
+        placeholder="제목"
+        value={title}
+        onChange={(event) => setTitle(event.target.value)}
+      />
       <input
         type="summary"
         placeholder="한 줄 소개"
