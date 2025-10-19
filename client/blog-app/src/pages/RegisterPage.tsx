@@ -4,8 +4,10 @@ import { FormValue } from "./LoginPage";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const {
     register,
@@ -16,7 +18,9 @@ export default function RegisterPage() {
 
   const checkUsernameAvailability = async (username: string) => {
     try {
-      const response = await instance.get(`/user/check-username?username=${username}`);
+      const response = await instance.get(
+        `/user/check-username?username=${username}`
+      );
       return response.data.available;
     } catch (error) {
       console.error("유저 이름 확인 오류", error);
@@ -35,9 +39,10 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await instance.post("/user/register", data);
-      console.log("요청 성공", response.data);
+      await instance.post("/user/register", data);
       setErrMsg(null);
+      // 회원가입 성공 후 로그인 페이지로 리다이렉트
+      navigate("/login");
       alert("회원 가입이 완료되었습니다!");
     } catch (error: unknown) {
       console.error("요청 오류", error);
@@ -46,7 +51,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <form method="POST" className="register_form" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      method="POST"
+      className="register_form"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <h1>회원가입</h1>
       <input
         type="text"
