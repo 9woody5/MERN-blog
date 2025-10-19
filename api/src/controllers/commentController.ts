@@ -13,7 +13,12 @@ export const createComment = async (req: Request, res: Response) => {
   const { postId } = req.params;
 
   try {
-    const newComment = await Comment.create({ content, author, post: postId, parent: parent || null });
+    const newComment = await Comment.create({
+      content,
+      author,
+      post: postId,
+      parent: parent || null,
+    });
 
     // 해당 게시글에 댓글 추가
     const targetPost = await Post.findById(postId);
@@ -37,7 +42,7 @@ export const getCommentsByPostId = async (req: Request, res: Response) => {
 
   try {
     const comments = await Comment.find({ post: postId })
-      .populate("author", ["username"]) 
+      .populate("author", ["username"])
       .sort({ createdAt: -1 })
       .exec();
     res.status(200).json(comments);
@@ -52,7 +57,11 @@ export const updateComment = async (req: Request, res: Response) => {
   const { content } = req.body;
 
   try {
-    const updatedComment = await Comment.findByIdAndUpdate(id, { content }, { new: true }).populate("author", ["username"]);
+    const updatedComment = await Comment.findByIdAndUpdate(
+      id,
+      { content },
+      { new: true }
+    ).populate("author", ["username"]);
     res.status(200).json(updatedComment);
   } catch (error) {
     res.status(500).json({ message: "댓글 수정 오류", error });

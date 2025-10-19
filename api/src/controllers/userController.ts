@@ -10,8 +10,6 @@ const secret = process.env.SECRET;
 
 export const registerUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
-  console.log(password);
-  console.log(req.body);
   try {
     const userDoc = await User.create({
       username,
@@ -56,13 +54,18 @@ export const loginUser = async (req: Request, res: Response) => {
   if (passOk) {
     // 로그인 시 필요한 정보 가져오기
     // 에러 발생 시, err 정보, 에러 없으면 token 발급
-    jwt.sign({ username, id: userDoc._id }, secret as string, { expiresIn: "1h" }, (err, token) => {
-      if (err) throw err;
-      res.cookie("token", token).json({
-        id: userDoc._id,
-        username,
-      });
-    });
+    jwt.sign(
+      { username, id: userDoc._id },
+      secret as string,
+      { expiresIn: "1h" },
+      (err, token) => {
+        if (err) throw err;
+        res.cookie("token", token).json({
+          id: userDoc._id,
+          username,
+        });
+      }
+    );
   } else {
     res.status(400).json("로그인에 실패했습니다.");
   }

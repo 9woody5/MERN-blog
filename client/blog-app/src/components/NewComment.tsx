@@ -29,7 +29,6 @@ const NewComment = ({ onCreated }: NewCommentProps) => {
         post: id,
       });
 
-      console.log("댓글 등록 완료", response.data);
       setCommentContent("");
       onCreated?.(response.data);
     } catch (err) {
@@ -44,10 +43,18 @@ const NewComment = ({ onCreated }: NewCommentProps) => {
           type="text"
           value={commentContent} // 추가된 부분
           onChange={(e) => setCommentContent(e.target.value)} // 추가된 부분
-          placeholder={userInfo?.id ? "내용을 입력하세요" : "댓글을 작성하려면 로그인이 필요합니다."}
+          placeholder={
+            userInfo?.id
+              ? "내용을 입력하세요"
+              : "댓글을 작성하려면 로그인이 필요합니다."
+          }
           disabled={!userInfo?.id}
         />
-        <button className={styles.submit} disabled={!userInfo?.id} type="submit">
+        <button
+          className={styles.submit}
+          disabled={!userInfo?.id}
+          type="submit"
+        >
           등록
         </button>
       </form>
