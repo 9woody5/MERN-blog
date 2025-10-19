@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
-const PROD_URL = "https://port-0-mern-blog-754g42alul99nxi.sel5.cloudtype.app" as const;
+const PROD_URL =
+  "https://port-0-mern-blog-754g42alul99nxi.sel5.cloudtype.app" as const;
 
 const resolveBaseURL = (): string => {
   const envBaseURL = import.meta.env?.VITE_API_BASE_URL as string | undefined;
