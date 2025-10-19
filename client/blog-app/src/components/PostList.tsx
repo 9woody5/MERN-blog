@@ -4,6 +4,8 @@ import styles from "../styles/PostList.module.scss";
 import instance from "../lib/axios";
 
 const resolveAssetBase = () => instance.defaults.baseURL;
+const resolveThumbUrl = (thumb: string) =>
+  `${resolveAssetBase()}/${thumb.replace(/\\/g, "/")}`;
 
 export interface PostProps {
   _id: string;
@@ -18,12 +20,19 @@ export interface PostProps {
   };
 }
 
-const Post: React.FC<PostProps> = ({ _id, title, summary, thumb, createdAt, author }) => {
+const Post: React.FC<PostProps> = ({
+  _id,
+  title,
+  summary,
+  thumb,
+  createdAt,
+  author,
+}) => {
   return (
     <Link to={`/post/${_id}`} className={styles.post}>
       <div className={styles.post_wrapper}>
         <div className={styles.img_box}>
-          <img src={`${resolveAssetBase()}/${thumb.replace(/\\/g, "/")}`} alt="" />
+          <img src={resolveThumbUrl(thumb)} alt="" loading="lazy" />
         </div>
         <div className={styles.texts}>
           <h2 className={styles.title}>{title}</h2>

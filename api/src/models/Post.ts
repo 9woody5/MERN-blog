@@ -17,6 +17,11 @@ const PostSchema = new Schema(
   }
 );
 
+// 인덱스 추가로 쿼리 성능 향상
+PostSchema.index({ createdAt: -1 }); // 정렬을 위한 인덱스
+PostSchema.index({ author: 1 }); // populate를 위한 인덱스
+PostSchema.index({ title: "text", summary: "text", content: "text" }); // 텍스트 검색을 위한 인덱스
+
 const Post = model("Post", PostSchema);
 
 export default Post;
