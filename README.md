@@ -17,7 +17,7 @@
 | React.js     | Express.js  |
 | TypeScript   | MongoDB Atlas |
 | SCSS         | mongoose    |
-|              | JWT         |
+| React-quill  | JWT         |
 |              | helmet      |
 
 <br>
